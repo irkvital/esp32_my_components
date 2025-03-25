@@ -8,6 +8,14 @@
 #include "freertos/semphr.h"
 #include "freertos/timers.h"
 
-void buttonFixInit(int gp_inp);
-void buttonFixPressed();
-void buttonFixReleased();
+#define BUTTONS_NUM 2
+#define GPIO_BUTTON_0 GPIO_NUM_19
+#define GPIO_BUTTON_1 GPIO_NUM_20
+
+static QueueHandle_t button_queue[BUTTONS_NUM];
+static gpio_num_t gpio_button[BUTTONS_NUM] =   {GPIO_NUM_19,
+                                                GPIO_NUM_20};
+
+void buttonFixInit();
+void buttonFixPressed(int button_num);
+void buttonFixReleased(int button_num);
