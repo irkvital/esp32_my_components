@@ -35,18 +35,16 @@ void taskButton(void* button_num) {
     bool tmp = false;
     TickType_t prew = xTaskGetTickCount();
     TickType_t curr;
-    // время ожидания дребезга контактов в мс
-    TickType_t wait_tick = 50;
-    wait_tick /= portTICK_PERIOD_MS;
+
     while (1) {
         if (xQueueReceive(button_queue[(int)button_num], &state, portMAX_DELAY)) {
             curr = xTaskGetTickCount();
             // проверка на дребезг контактов (на событие нажатия)
-            if (state == true && last_button_state == false && (curr - prew) > (wait_tick)) {
+            if (state == true && last_button_state == false && (curr - prew) > WAIT_BOUNCE_MS) {
                 last_button_state = true;
                 buttonFixPressed((int)button_num);
             // проверка на дребезг контактов (на сыбытие отжатия)
-            } else if (state == false && last_button_state == true && !xQueuePeek(button_queue[(int)button_num], &tmp, wait_tick)) {
+            } else if (state == false && last_button_state == true && !xQueuePeek(button_queue[(int)button_num], &tmp, WAIT_BOUNCE_MS)) {
                 last_button_state = false;
                 buttonFixReleased((int)button_num);
             }
@@ -65,7 +63,7 @@ void buttonFixInit() {
     // инициализация каждого gpio
     for (int i = 0; i < BUTTONS_NUM; i++) {
         if (button_queue[i] == NULL) {
-            button_queue[i] = xQueueCreate(30, sizeof(bool));
+            button_queue[i] = xQueueCreate(20, sizeof(bool));
         }
         initPinInp(gpio_button[i]);
 
@@ -78,7 +76,7 @@ void buttonFixInit() {
         xTaskCreatePinnedToCore(taskButton, "taskButton", 3072, (void*) i, 20, NULL, tskNO_AFFINITY);
     }
 }
- 
+
 void app_main(void)
 {
     buttonFixInit();
