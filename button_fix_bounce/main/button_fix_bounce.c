@@ -77,10 +77,10 @@ void buttonFixInit() {
     }
 }
 
-void app_main(void)
-{
-    buttonFixInit();
-}
+// void app_main(void)
+// {
+//     buttonFixInit();
+// }
 
 void buttonFixPressed(int button_num) {
     ESP_LOGI("MAIN", "Button %d is pressed", button_num);

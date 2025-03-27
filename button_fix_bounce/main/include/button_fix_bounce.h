@@ -12,13 +12,16 @@
 #include "freertos/timers.h"
 
 #define WAIT_BOUNCE_MS 50 / portTICK_PERIOD_MS
-#define BUTTONS_NUM 2
-#define GPIO_BUTTON_0 GPIO_NUM_19
-#define GPIO_BUTTON_1 GPIO_NUM_20
+#define BUTTONS_NUM 4
+
+static gpio_num_t gpio_button[BUTTONS_NUM] = {
+                                                GPIO_NUM_1,
+                                                GPIO_NUM_2,
+                                                GPIO_NUM_42,
+                                                GPIO_NUM_41,
+                                            };
 
 static QueueHandle_t button_queue[BUTTONS_NUM];
-static gpio_num_t gpio_button[BUTTONS_NUM] =   {GPIO_NUM_19,
-                                                GPIO_NUM_20};
 
 void buttonFixInit();
 void buttonFixPressed(int button_num);
